@@ -1,4 +1,4 @@
-// Fixed src/contexts/UserProgressContext.tsx - COMPLETE FIXED VERSION
+// src/contexts/UserProgressContext.tsx - COMPLETE FIXED VERSION
 import React, {
   createContext,
   useContext,
@@ -124,7 +124,7 @@ export interface Progress {
   achievements: Achievement[];
 }
 
-// Context type definition - matching component expectations
+// FIXED: Context type definition with saveArtwork method
 export interface UserProgressContextType {
   // User Profile (using "user" as expected by components)
   user: User | null;
@@ -157,6 +157,22 @@ export interface UserProgressContextType {
   addToPortfolio: (item: Omit<PortfolioItem, 'id' | 'createdAt'>) => Promise<void>;
   updatePortfolioItem: (id: string, updates: Partial<PortfolioItem>) => Promise<void>;
   deletePortfolioItem: (id: string) => Promise<void>;
+  
+  // FIXED: Add saveArtwork method for drawing tab compatibility
+  saveArtwork: (artwork: {
+    title: string;
+    imageUrl: string;
+    tags: string[];
+    createdAt: number;
+    updatedAt: number;
+    metadata: {
+      drawingTime: number;
+      strokeCount: number;
+      layersUsed: number;
+      brushesUsed: string[];
+      canvasSize: { width: number; height: number };
+    };
+  }) => Promise<void>;
   
   // Streaks & Habits
   streakData: StreakData;
@@ -372,7 +388,7 @@ export function UserProgressProvider({ children }: { children: ReactNode }) {
   const xpProgress = useMemo(() => progress?.xpProgress || 0, [progress]);
   const streakDays = useMemo(() => progress?.streakDays || 0, [progress]);
 
-  // FIXED: Storage operations with proper error handling
+  // Storage operations with proper error handling
   const saveToStorage = useCallback(async (key: string, data: any) => {
     try {
       await AsyncStorage.setItem(key, JSON.stringify(data));
@@ -409,7 +425,7 @@ export function UserProgressProvider({ children }: { children: ReactNode }) {
     }, 1000);
   }, [saveToStorage]);
 
-  // FIXED: Initialize user data with proper error handling
+  // Initialize user data with proper error handling
   const initialize = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -683,6 +699,47 @@ export function UserProgressProvider({ children }: { children: ReactNode }) {
     console.log(`🎨 Added artwork to portfolio: ${portfolioItem.title}`);
   }, [portfolio, userProgress, debouncedSave, checkAndUnlockAchievements]);
 
+  // FIXED: Add saveArtwork method that maps to addToPortfolio
+  const saveArtwork = useCallback(async (artwork: {
+    title: string;
+    imageUrl: string;
+    tags: string[];
+    createdAt: number;
+    updatedAt: number;
+    metadata: {
+      drawingTime: number;
+      strokeCount: number;
+      layersUsed: number;
+      brushesUsed: string[];
+      canvasSize: { width: number; height: number };
+    };
+  }) => {
+    const portfolioItem: Omit<PortfolioItem, 'id' | 'createdAt'> = {
+      title: artwork.title,
+      description: `Created on ${new Date(artwork.createdAt).toLocaleDateString()}`,
+      imageUri: artwork.imageUrl,
+      tags: artwork.tags,
+      isPublic: false,
+      likes: 0,
+      viewCount: 0,
+      stats: {
+        likes: 0,
+        views: 0,
+        comments: 0,
+        shares: 0,
+      },
+      metadata: {
+        timeSpent: artwork.metadata.drawingTime || 0,
+        toolsUsed: artwork.metadata.brushesUsed || [],
+        skillsApplied: ['drawing'],
+      },
+      visibility: 'private',
+      featured: false,
+    };
+    
+    await addToPortfolio(portfolioItem);
+  }, [addToPortfolio]);
+
   const updatePortfolioItem = useCallback(async (id: string, updates: Partial<PortfolioItem>) => {
     const updatedPortfolio = portfolio.map(item => 
       item.id === id ? { ...item, ...updates } : item
@@ -933,6 +990,7 @@ export function UserProgressProvider({ children }: { children: ReactNode }) {
     addToPortfolio,
     updatePortfolioItem,
     deletePortfolioItem,
+    saveArtwork, // FIXED: Added saveArtwork method
 
     // Streaks & Habits
     streakData,
@@ -962,7 +1020,7 @@ export function UserProgressProvider({ children }: { children: ReactNode }) {
     user, userProgress, progress, addXP, getCurrentLevel, getXPProgress,
     level, xp, xpToNextLevel, xpProgress, streakDays,
     achievements, unlockedAchievements, checkAndUnlockAchievements,
-    portfolio, addToPortfolio, updatePortfolioItem, deletePortfolioItem,
+    portfolio, addToPortfolio, updatePortfolioItem, deletePortfolioItem, saveArtwork,
     streakData, recordActivity, updateStreakGoal, getDailyGoalProgress, checkDailyStreak,
     learningStats, updateDrawingTime, recordLessonCompletion, updateLearningStats,
     updatePreferences, updateProfile, setSkillLevel, createUser,

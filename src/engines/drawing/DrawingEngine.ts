@@ -1,6 +1,6 @@
-// src/engines/drawing/DrawingEngine.ts - PROFESSIONAL DRAWING ENGINE V1.0
+// src/engines/drawing/DrawingEngine.ts - PROFESSIONAL DRAWING ENGINE V2.0
 
-import { Skia } from '@shopify/react-native-skia';
+import { Skia, SkPath, SkPaint } from '@shopify/react-native-skia';
 
 export interface Point {
   x: number;
@@ -19,8 +19,8 @@ export interface Stroke {
   opacity: number;
   tool: 'brush' | 'eraser';
   brushId: string;
-  path?: any; // Skia Path
-  paint?: any; // Skia Paint
+  path?: SkPath;
+  paint?: SkPaint;
   timestamp: number;
   completed: boolean;
 }
@@ -77,7 +77,7 @@ export interface DrawingStats {
 }
 
 /**
- * PROFESSIONAL DRAWING ENGINE V1.0
+ * PROFESSIONAL DRAWING ENGINE V2.0
  * 
  * ✅ ENTERPRISE FEATURES:
  * - High-performance stroke processing
@@ -91,8 +91,8 @@ export interface DrawingStats {
  * - Thread-safe operations
  * - Optimized for 60fps rendering
  */
-class ProfessionalDrawingEngine {
-  private static instance: ProfessionalDrawingEngine;
+export class DrawingEngine {
+  private static instance: DrawingEngine;
   
   // =================== CORE STATE ===================
   
@@ -163,11 +163,11 @@ class ProfessionalDrawingEngine {
     this.initializeBrushPresets();
   }
 
-  public static getInstance(): ProfessionalDrawingEngine {
-    if (!ProfessionalDrawingEngine.instance) {
-      ProfessionalDrawingEngine.instance = new ProfessionalDrawingEngine();
+  public static getInstance(): DrawingEngine {
+    if (!DrawingEngine.instance) {
+      DrawingEngine.instance = new DrawingEngine();
     }
-    return ProfessionalDrawingEngine.instance;
+    return DrawingEngine.instance;
   }
 
   // =================== INITIALIZATION ===================
@@ -307,8 +307,8 @@ class ProfessionalDrawingEngine {
 
   // =================== STROKE PROCESSING ===================
 
-  private createSkiaPath(points: Point[]): any {
-    if (points.length === 0) return null;
+  private createSkiaPath(points: Point[]): SkPath {
+    if (points.length === 0) return Skia.Path.Make();
     
     const path = Skia.Path.Make();
     
@@ -342,7 +342,7 @@ class ProfessionalDrawingEngine {
     return path;
   }
 
-  private createSkiaPaint(stroke: Stroke): any {
+  private createSkiaPaint(stroke: Stroke): SkPaint {
     const paint = Skia.Paint();
     
     // Basic properties
@@ -676,10 +676,10 @@ class ProfessionalDrawingEngine {
 // =================== EXPORTS ===================
 
 // Export singleton instance
-export const professionalDrawingEngine = ProfessionalDrawingEngine.getInstance();
+export const drawingEngine = DrawingEngine.getInstance();
 
-// Legacy exports for compatibility
-export const skiaDrawingEngine = professionalDrawingEngine;
-export const DrawingEngine = ProfessionalDrawingEngine;
+// Legacy exports for compatibility - FIXED THE NAMING ISSUE
+export const SkiaDrawingEngine = DrawingEngine;
+export const skiaDrawingEngine = drawingEngine;
 
-export default professionalDrawingEngine;
+export default drawingEngine;
