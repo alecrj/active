@@ -1,44 +1,38 @@
 {
   "expo": {
     "name": "Pikaso",
-    "slug": "Pikaso",
+    "slug": "pikaso",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "scheme": "pikaso",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "requireFullScreen": false,
-      "infoPlist": {
-        "CADisableMinimumFrameDurationOnPhone": true
-      },
-      "bundleIdentifier": "com.anonymous.Pikaso"
+      "bundleIdentifier": "com.pikaso.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "package": "com.pikaso.app"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-dev-client",
+        {
+          "addGeneratedScheme": false
+        }
+      ]
     ],
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "9dee9896-e0d4-4742-a643-06c82e0408a5"
-      }
-    }
+    "scheme": "pikaso"
   }
 }

@@ -327,3 +327,8 @@ export function getNextLesson(currentLessonId: string): Lesson | undefined {
   }
   return undefined;
 }
+
+// Add the missing function that's being imported
+export function getFundamentalLessons(): Lesson[] {
+  return fundamentalLessons;
+}

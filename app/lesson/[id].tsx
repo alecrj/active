@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft, Play, CheckCircle, Star } from 'lucide-react-native';
-import SkiaDrawingCanvas from '../../src/components/SkiaDrawingCanvas';
+import ModernSkiaCanvas from '../../src/components/ModernSkiaCanvas';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -207,7 +207,7 @@ export default function LessonScreen() {
 
       {/* Drawing Canvas */}
       <View style={styles.canvasContainer}>
-        <SkiaDrawingCanvas
+        <ModernSkiaCanvas
           width={screenWidth - 32}
           height={screenHeight * 0.4}
           strokeWidth={5}
